@@ -1,0 +1,46 @@
+.twHandle{
+    font-size: 12px;
+    opacity: 0.5;
+    color:#000;
+}
+.retweet{
+    opacity: 0.5;
+}
+.twImage{
+    width:100%;
+
+}
+
+.table-view-cell{
+    padding-right: 6px;
+}
+
+.media-object{
+    width:15%;
+}
+
+.author{
+    font-size: 12px;
+}
+
+.wikiText{
+    text-align: justify;
+    padding: 15px;
+    font-size: 14px;
+    color:#474747;
+}
+
+p *{
+    font-size: 14px;
+    color:#474747;
+    text-align: justify;
+
+}
+
+.table-view{
+    margin-top: -15px;
+}
+
+.media-icon{
+    width:5%;
+}

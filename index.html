@@ -1,0 +1,235 @@
+<head>
+    <title>hello</title>
+    <meta charset="utf-8"/>
+    <title>Brainfeed</title>
+    <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
+    <script
+            src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js"
+            data-apikey="5f9cd2390bf3b97cf9d744a2b754df97">
+    </script>
+    <script type="text/javascript">
+        (function (e, t) {
+            var r = e.amplitude || {};
+            var n = t.createElement("script");
+            n.type = "text/javascript";
+            n.async = true;
+            n.src = "https://d24n15hnbwhuhn.cloudfront.net/libs/amplitude-2.1.0-min.gz.js";
+            var s = t.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(n, s);
+            r._q = [];
+            function a(e) {
+                r[e] = function () {
+                    r._q.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                }
+            }
+
+            var i = ["init", "logEvent", "logRevenue", "setUserId", "setUserProperties", "setOptOut", "setVersionName", "setDomain", "setDeviceId", "setGlobalUserProperties"];
+            for ( var o = 0; o < i.length; o++ ) {a(i[o])}
+            e.amplitude = r
+        })(window, document);
+
+        amplitude.init("bda2b3ff1391772fca002464662048ce");
+    </script>
+
+    <script type="text/javascript">(function (f, b) {
+        if ( !b.__SV ) {
+            var a, e, i, g;
+            window.mixpanel = b;
+            b._i = [];
+            b.init = function (a, e, d) {
+                function f(b, h) {
+                    var a = h.split(".");
+                    2 == a.length && (b = b[a[0]], h = a[1]);
+                    b[h] = function () {b.push([h].concat(Array.prototype.slice.call(arguments, 0)))}
+                }
+
+                var c = b;
+                "undefined" !== typeof d ? c = b[d] = [] : d = "mixpanel";
+                c.people = c.people || [];
+                c.toString = function (b) {
+                    var a = "mixpanel";
+                    "mixpanel" !== d && (a += "." + d);
+                    b || (a += " (stub)");
+                    return a
+                };
+                c.people.toString = function () {return c.toString(1) + ".people (stub)"};
+                i = "disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+                for ( g = 0; g < i.length; g++ )f(c, i[g]);
+                b._i.push([a, e, d])
+            };
+            b.__SV = 1.2;
+            a = f.createElement("script");
+            a.type = "text/javascript";
+            a.async = !0;
+            a.src = "undefined" !== typeof MIXPANEL_CUSTOM_LIB_URL ? MIXPANEL_CUSTOM_LIB_URL : "//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
+            e = f.getElementsByTagName("script")[0];
+            e.parentNode.insertBefore(a, e)
+        }
+    })(document, window.mixpanel || []);
+    mixpanel.init("4568de33d3ae90690362280ba33ca0d8");</script>
+
+
+</head>
+
+<template name="layout">
+    {{#momentum plugin='iron-router' options=transition}}
+        {{>yield}}
+    {{/momentum}}
+</template>
+
+<template name="login">
+    <div class="content animated pulse">
+        <br>
+
+        <p style="text-align: center;font-size: 18px;padding-top: 100px;">
+            <img src="/icon.png" width="180px" height="180px"><br>
+
+        </p>
+        <br>
+        <center>
+            <button id="tw" class="btn btn-primary btn-block"><i class="fa fa-twitter"></i>&nbsp;&nbsp;Twitter Login
+            </button>
+        </center>
+    </div>
+</template>
+
+<template name="home">
+    <header class="bar bar-nav">
+        {{#if back}}
+            <a href="{{pathFor getPreviousPage}}" class="icon icon-left-nav pull-left"
+               velociratchet-transition="left"></a>
+        {{/if}}
+        <h1 class="title"><i class="fa fa-home"></i> {{screenName}}</h1>
+    </header>
+
+    <div class="content">
+        <p class="content-padded"></p>
+
+        <ul class="table-view">
+            {{#each timelines}}
+                <li class="table-view-cell media">
+                    {{#if retweeted_status}}
+                        <img class="media-object pull-left" src="{{this.retweeted_status.user.profile_image_url}}">
+
+                        <div class="media-body">
+                            <div style="display: inline-flex"> {{this.retweeted_status.user.name}}&nbsp;
+                                <div class="twHandle">@{{this.retweeted_status.user.screen_name}}</div>
+                            </div>
+                            <p style="color:#474747">{{this.retweeted_status.text}}</p>
+                            {{#if retweeted_status.entities.media}}
+                                <img class="twImage" src="{{this.media_image_url}}">
+                            {{/if}}
+                            <p class="retweet"><i class="fa fa-retweet"></i> {{this.user.name}} retweeted</p>
+                        </div>
+                    {{else}}
+                        <img class="media-object pull-left" src="{{this.user.profile_image_url}}">
+
+                        <div class="media-body">
+                            <div style="display: inline-flex"> {{this.user.name}}&nbsp;
+                                <div class="twHandle">@{{this.user.screen_name}}</div>
+                            </div>
+                            <p style="color:#474747">{{this.text}}</p>
+                            {{#if entities.media}}
+                                <img class="twImage" src="{{this.media_image_url}}">
+                            {{/if}}
+
+                        </div>
+                    {{/if}}
+                </li>
+            {{/each}}
+        </ul>
+    </div>
+
+    <div class="bar bar-standard bar-footer">
+        <a class="icon icon-compose pull-left" id="compose"></a>
+        <a class="icon icon-refresh pull-right" id="refresh"></a>
+    </div>
+</template>
+
+<template name="articles">
+
+    <header class="bar bar-nav">
+        <a href="/home" class="icon icon-left-nav pull-left"
+           velociratchet-transition="left"></a>
+
+        <h1 class="title"><i class="fa fa-globe"></i> Article</h1>
+    </header>
+
+    <div class="content">
+        <p class="content-padded"></p>
+
+        <ul class="table-view">
+
+            <li class="table-view-cell media">
+                {{#if type}}
+                    {{#if author}}
+                        <p class="author">By {{author}} on {{date}}</p><br>
+                    {{/if}}
+
+
+                    <div class="media-body">
+                        <img class="media-icon media-object pull-left" src="{{icon}}"> {{title}}<br><br>
+
+                    </div>
+
+                    {{{data}}}
+
+                    <br><br>
+                    <h5>Know More About:</h5>
+                    <ul>
+                        {{#each tags}}
+                            <li><a class="wiki">{{this.label}}</a></li>
+                        {{/each}}
+
+                    </ul>
+
+                {{else}}
+                    <div class="media-body">
+                        Oops!! You have hit dead end :( <br>
+
+                        <p>No article can be found on this link</p>
+
+                    </div>
+                {{/if}}
+            </li>
+
+        </ul>
+    </div>
+
+</template>
+
+
+<template name="compose">
+
+    <header class="bar bar-nav">
+
+        <h1 class="title"><i class="fa fa-pencil"></i> Compose Tweet</h1>
+    </header>
+    <div class="content">
+        <form>
+            <br>
+            <textarea id="status" rows="5"></textarea><br><br>
+            <button class="btn btn-positive btn-block" id="tweet">Tweet</button>
+        </form>
+    </div>
+</template>
+
+<template name="wikipedia">
+
+    <header class="bar bar-nav">
+        <a href="/articles" class="icon icon-left-nav pull-left"
+           velociratchet-transition="left"></a>
+
+        <h1 class="title"><i class="fa fa-info-circle"></i> {{title}}</h1>
+    </header>
+
+    <div class="content">
+
+        <p class="wikiText">
+            {{{data}}}
+        </p>
+
+
+    </div>
+</template>
+
