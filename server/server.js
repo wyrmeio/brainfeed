@@ -45,7 +45,7 @@ else {
 Meteor.methods({
 
 	getTimeline: function (id) {
-
+        var self=this;
 		var temp = Meteor.users.find({_id: id}).fetch();
 		var token = temp[0].services.twitter.accessToken;
 		var secret = temp[0].services.twitter.accessTokenSecret;
@@ -67,13 +67,32 @@ Meteor.methods({
 		client.get('statuses/home_timeline', params, function (error, tweets, response) {
 			if ( !error ) {
 				//console.log(tweets);
+                _.map(tweets,function(value,index){
+                    Tweets.insert({uid:id,tweet: value});
+                })
 				myFuture.return(tweets);
 			}
 			else{
 				console.log(error);
 			}
 		});
-		return myFuture.wait();
+
+        var Fiber = Npm.require('fibers');
+
+
+        Fiber( function() {
+        client.stream('user',{with: 'followings'}, function (stream) {
+            stream.on('data', function (data) {
+                self.unblock();
+                    if(!getValues(data,"friends"))
+                        Tweets.insert({uid:id,tweet: data});
+                    console.log(data);
+
+            });
+        });
+        }).run();
+
+        return myFuture.wait();
 	},
 
 	getArticles: function (link) {
@@ -134,6 +153,27 @@ Meteor.methods({
 	}
 
 });
+
+Meteor.publish('Tweets', function (id) {
+
+    return Tweets.find({uid:id});
+
+});
+
+
+function getValues(obj, key) {
+    var objects = [];
+    for (var i in obj) {
+        if (!obj.hasOwnProperty(i)) continue;
+        if (typeof obj[i] == 'object') {
+            objects = objects.concat(getValues(obj[i], key));
+        } else if (i == key) {
+            objects.push(obj[i]);
+        }
+    }
+    return objects;
+}
+
 
 
 

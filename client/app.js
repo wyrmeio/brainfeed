@@ -2,16 +2,25 @@ if ( Meteor.isClient ) {
 	// counter starts at 0
 	Meteor.startup(function () {
 		Session.set('type',true);
+
 	});
 
-	Template.layout.events(Velociratchet.events);
-	Template.layout.helpers(Velociratchet.helpers);
+	/*Template.layout.events(Velociratchet.events);
+	Template.layout.helpers(Velociratchet.helpers);*/
 
 	String.prototype.capitalize = function () {
 		return this.toLowerCase().replace(/\b\w/g, function (m) {
 			return m.toUpperCase();
 		});
 	};
+
+    Tracker.autorun(function() {
+
+        if (Meteor.userId()) {
+            Meteor.subscribe('Tweets',Meteor.userId());
+        }
+
+    });
 
 	Template.home.helpers({
 		timelines: function () {
