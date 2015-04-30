@@ -12,6 +12,6 @@ App.icons({
 });
 
 
-App.setPreference('Fullscreen', 'true');
+
 App.accessRule('*');
 

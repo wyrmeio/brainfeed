@@ -3,6 +3,8 @@
  */
 var consumer_key;
 var consumer_secret;
+var stream_started=false;
+var Fiber = Npm.require('fibers');
 
 var inProduction = function () {
 	return process.env.NODE_ENV === "production";
@@ -45,7 +47,7 @@ else {
 Meteor.methods({
 
 	getTimeline: function (id) {
-        var self=this;
+		var self = this;
 		var temp = Meteor.users.find({_id: id}).fetch();
 		var token = temp[0].services.twitter.accessToken;
 		var secret = temp[0].services.twitter.accessTokenSecret;
@@ -67,32 +69,35 @@ Meteor.methods({
 		client.get('statuses/home_timeline', params, function (error, tweets, response) {
 			if ( !error ) {
 				//console.log(tweets);
-                _.map(tweets,function(value,index){
-                    Tweets.insert({uid:id,tweet: value});
-                })
+				Fiber(function () {
+					_.map(tweets, function (value, index) {
+						Tweets.insert({uid: id, tweet: value});
+					});
+				}).run();
 				myFuture.return(tweets);
 			}
-			else{
+			else {
 				console.log(error);
 			}
 		});
 
-        var Fiber = Npm.require('fibers');
+		if(true) {
+			self.unblock();
+			twitterStream(client, id);
+			stream_started=true;
+		}
+
+		return myFuture.wait();
+	},
+
+	getVideos: function () {
 
 
-        Fiber( function() {
-        client.stream('user',{with: 'followings'}, function (stream) {
-            stream.on('data', function (data) {
-                self.unblock();
-                    if(!getValues(data,"friends"))
-                        Tweets.insert({uid:id,tweet: data});
-                    console.log(data);
+		var result = HTTP.get("https://www.googleapis.com/youtube/v3/search", {query: "order=date&part=snippet&channelId=UCPQ1nqIgM_yUiQVJBg_RR6Q&maxResults=50&key=AIzaSyDN1qT_tTDoQbxmuP0A5QRveOnFsPSqhT8"});
 
-            });
-        });
-        }).run();
+		//console.log(result.data.items);
+		return result.data.items;
 
-        return myFuture.wait();
 	},
 
 	getArticles: function (link) {
@@ -100,17 +105,11 @@ Meteor.methods({
 		var result = HTTP.get("http://api.diffbot.com/v3/analyze", {
 			query: "token=0270f11fa0d8f19cf2f8360e5cb90f19&url=" + link
 		});
-
-
 		console.log(result.data);
 		return result.data;
 
 	},
-	/*getRead: function (link) {
-		var result = HTTP.get("https://readability.com/api/content/v1/parser?url=" + link + "&token=6fe237ed2fdde391a4e125f292d35ca51b36f63e");
-		console.log(result.data.content);
-		return result.data.content;
-	},*/
+
 	getWiki: function (label) {
 		//https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&titles=Stack%20Overflow
 
@@ -156,25 +155,37 @@ Meteor.methods({
 
 Meteor.publish('Tweets', function (id) {
 
-    return Tweets.find({uid:id});
+	return Tweets.find({uid: id});
 
 });
 
 
 function getValues(obj, key) {
-    var objects = [];
-    for (var i in obj) {
-        if (!obj.hasOwnProperty(i)) continue;
-        if (typeof obj[i] == 'object') {
-            objects = objects.concat(getValues(obj[i], key));
-        } else if (i == key) {
-            objects.push(obj[i]);
-        }
-    }
-    return objects;
+	var objects = [];
+	for ( var i in obj ) {
+		if ( !obj.hasOwnProperty(i) ) continue;
+		if ( typeof obj[i] == 'object' ) {
+			objects = objects.concat(getValues(obj[i], key));
+		} else if ( i == key ) {
+			objects.push(obj[i]);
+		}
+	}
+	return objects;
 }
 
 
+twitterStream = function (client,id) {
+
+	client.stream('user', {with: 'followings'}, function (stream) {
+		stream.on('data', Meteor.bindEnvironment(function (data) {
+			Fiber(function () {
+				Tweets.insert({uid: id, tweet: data});
+				//console.log(data);
+			}).run();
+		}));
+	});
+
+};
 
 
 

@@ -21,9 +21,18 @@ Router.route('home',  {
 HomeController = RouteController.extend({
 	onBeforeAction: function () {
 
+        Session.set('videoId', null);
+         video.set();
+
+        Meteor.call('getVideos', function (error, result) {
+            Session.set('videoId', result[0].id.videoId);
+            video.set(result);
+        });
+
 		Meteor.call('getTimeline',Meteor.userId() ,function (error, result) {
 			timeline.set(result);
 		});
+
 		this.next();
 	}
 });

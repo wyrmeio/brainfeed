@@ -24,12 +24,14 @@ if ( Meteor.isClient ) {
 
 	Template.home.helpers({
 		timelines: function () {
-			return _.map(timeline.get(), function (timeline, index) {
+			/*return _.map(timeline.get(), function (timeline, index) {
 				//timeline.time_ago=time_ago(timeline.created_at);
 				if ( timeline.entities.media )
 					timeline.media_image_url = timeline.entities.media[0].media_url;
 				return timeline;
-			});
+			});*/
+
+			return Tweets.find({},{sort:{_id:-1},fields: {tweet: 1},limit:50}).fetch();
 		},
 		screenName: function () {
 			//return capitalizeFirstLetter(Meteor.user().profile.name);
@@ -110,9 +112,9 @@ if ( Meteor.isClient ) {
 
 	Template.login.events({
 		'click #tw': function (e) {
-			//e.preventDefault();
-			amplitude.logEvent("login attempted");
-			mixpanel.track("login attempted");
+			e.preventDefault();
+			/*amplitude.logEvent("login attempted");
+			mixpanel.track("login attempted");*/
 
 			Meteor.loginWithTwitter({
 				loginStyle: "redirect"
@@ -135,6 +137,34 @@ if ( Meteor.isClient ) {
 			Router.go('home');
 		}
 	});
+
+
+	Template.videos.helpers({
+		id: function () {
+
+			/*if(Session.get('videoId')!==null)*/
+			return Session.get('videoId');
+
+		},
+		videoList: function () {
+
+			return _.map(video.get(),function (video, index) {
+				video.createdtime = time_ago(video.snippet.publishedAt);
+				return video;
+			});
+		}
+	});
+
+	Template.videos.events({
+		'click .panel': function (e) {
+			e.preventDefault();
+			var self = this;
+			Session.set('videoId', self.id.videoId);
+			/*Session.set('title', self.snippet.title);
+			 Router.go('play')*/
+		}
+	});
+
 
 }
 
@@ -204,3 +234,6 @@ function getValues(obj, key) {
 	}
 	return objects;
 }
+
+
+
