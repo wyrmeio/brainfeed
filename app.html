@@ -3,35 +3,7 @@
     <meta charset="utf-8"/>
     <title>Brainfeed</title>
     <meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes"/>
-    <script
-            src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js"
-            data-apikey="5f9cd2390bf3b97cf9d744a2b754df97">
-    </script>
-    <script type="text/javascript">
-        (function (e, t) {
-            var r = e.amplitude || {};
-            var n = t.createElement("script");
-            n.type = "text/javascript";
-            n.async = true;
-            n.src = "https://d24n15hnbwhuhn.cloudfront.net/libs/amplitude-2.1.0-min.gz.js";
-            var s = t.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(n, s);
-            r._q = [];
-            function a(e) {
-                r[e] = function () {
-                    r._q.push([e].concat(Array.prototype.slice.call(arguments, 0)));
-                }
-            }
 
-            var i = ["init", "logEvent", "logRevenue", "setUserId", "setUserProperties", "setOptOut", "setVersionName", "setDomain", "setDeviceId", "setGlobalUserProperties"];
-            for (var o = 0; o < i.length; o++) {
-                a(i[o])
-            }
-            e.amplitude = r
-        })(window, document);
-
-        amplitude.init("bda2b3ff1391772fca002464662048ce");
-    </script>
 
     <script type="text/javascript">(function (f, b) {
         if (!b.__SV) {
@@ -75,6 +47,7 @@
     mixpanel.init("4568de33d3ae90690362280ba33ca0d8");</script>
 
 
+
 </head>
 
 <template name="layout">
@@ -89,7 +62,7 @@
         <br>
 
         <div class="col-md-4 col-md-offset-4">
-            <p style="text-align: center;font-size: 18px;padding-top: 100px;">
+            <p style="text-align: center;font-size: 18px;padding-top: 150px;">
                 <img src="/icon.png" width="180px" height="180px"><br>
 
             </p>
@@ -112,13 +85,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><i class="fa fa-home"></i> {{screenName}}</a>
+                <a class="navbar-brand" id="donate" href=""><i class="fa fa-home"></i> {{screenName}}</a>
             </div>
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
                 <ul class="nav navbar-nav">
 
                 </ul>
+
+
 
             </div>
         </div>
@@ -162,6 +137,7 @@
 
                             </div>
                         {{/if}}
+                        <hr>
                     </div>
                 {{/each}}
             </div>
@@ -173,24 +149,30 @@
 
 <template name="videos">
     <div class="fixme"
-         style="position: fixed;top: 45px;left: 0;height:450px;width:55%;z-index: 10000;background-color: #000;">
-        <iframe width="100%" height="450px" src="//www.youtube.com/embed/{{id}}?rel=0&autoplay=1"
+         style="position: fixed;top: 45px;left: 0;height:400px;width:57%;z-index: 1;background-color: #000;">
+        <iframe width="100%" height="400px" src="//www.youtube.com/embed/{{id}}?rel=0&autoplay=1"
                 frameborder="0"
                 allowfullscreen="true"></iframe>
     </div>
-    <div style="margin-top:510px">
+    <div style="margin-top:490px">
         <div class="row">
-    {{#each videoList}}
-        <div class="col-md-4 grid-cols">
-            <div class="panel panel-default grid">
-                <div class="panel-body">
-                    <img class="thumbnails" src="{{this.snippet.thumbnails.medium.url}}"><br>
+            <div class="DocumentList">
+                <ul class="list-inline">
+            {{#each videoList}}
+            <li class="DocumentItem">
+                <div class="grid-cols">
+                    <div class="panel panel-default grid">
+                        <div class="panel-body">
+                            <img class="thumbnails" src="{{this.snippet.thumbnails.medium.url}}"><br>
 
-                    <div class="nowrap">&nbsp;&nbsp;{{this.snippet.title}}</div>
+                            <div class="nowrap">&nbsp;&nbsp;{{this.snippet.title}}</div>
+                        </div>
+                    </div>
                 </div>
+                </li>
+            {{/each}}
+                </ul>
             </div>
-        </div>
-    {{/each}}
         </div>
     </div>
 </template>

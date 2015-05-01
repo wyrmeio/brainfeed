@@ -24,3 +24,6 @@ meteorhacks:npm
 npm-container
 meteorhacks:async
 panter:bootswatch-paper
+wylio:mandrill
+mrgalaxy:stripe
+grove:stripe-checkout
