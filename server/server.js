@@ -79,7 +79,7 @@ Meteor.methods({
                 //console.log(tweets);
                 Fiber(function () {
                     _.map(tweets, function (value, index) {
-                        Tweets.insert({uid: id, tweet: value});
+                        Tweets.upsert({uid: id, tweet: value},{$set:{uid: id, tweet: value}});
                     });
                 }).run();
                 myFuture.return(tweets);
@@ -236,15 +236,38 @@ function getValues(obj, key) {
 twitterStream = function (client, id) {
 
     client.stream('user', {with: 'followings'}, function (stream) {
+
         stream.on('data', Meteor.bindEnvironment(function (data) {
             Fiber(function () {
-                Tweets.insert({uid: id, tweet: data});
+                // if(Tweets.find({uid:id,tweet:data}))
+                Tweets.upsert({uid: id,tweet:data}, {$set: {uid:id,tweet: data}});
+                if (Tweets.find({uid: id}).count() > 100) {
+                    console.log("DB cleaned");
+                    var temp = Tweets.find({uid: id}, {
+                        sort: {'tweet.created_at': -1},
+                        limit: 100
+                    }).fetch().map(function (doc) {
+                        return doc._id;
+                    });
+
+                    Tweets.remove({_id: {$nin: temp}});
+                }
+
                 //console.log(data);
             }).run();
         }));
     });
 
 };
+
+/*Meteor.setInterval(function(){
+ if(Tweets.find({uid:id}).count()>500){
+ console.log("DB cleaned");
+ var temp=Tweets.find({uid:id},{sort:{'tweet.created_at':-1},limit:500}).toArray().map(function(doc){ return doc._id;});
+
+ Tweets.remove({_id:{$nin:temp}});
+ }
+ },30000);*/
 
 
 

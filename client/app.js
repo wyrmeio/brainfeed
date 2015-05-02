@@ -67,7 +67,11 @@ if (Meteor.isClient) {
              return timeline;
              });*/
 
-            return Tweets.find({}, {sort: {'tweet.created_at': -1}, fields: {tweet: 1}, limit: 50}).fetch();
+            return _.map(Tweets.find({}, {sort: {'tweet.created_at': -1}, fields: {tweet: 1}, limit: 50}).fetch(),function(timeline,index){
+                if ( timeline.tweet.entities.media )
+                    timeline.tweet.media_image_url = timeline.tweet.entities.media[0].media_url;
+                return timeline;
+            });
         },
         screenName: function () {
             //return capitalizeFirstLetter(Meteor.user().profile.name);

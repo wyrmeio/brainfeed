@@ -47,7 +47,6 @@
     mixpanel.init("4568de33d3ae90690362280ba33ca0d8");</script>
 
 
-
 </head>
 
 <template name="layout">
@@ -94,7 +93,6 @@
                 </ul>
 
 
-
             </div>
         </div>
     </nav>
@@ -117,27 +115,37 @@
 
 
                             <div class="col-md-10">
-                                <div style="display: inline-flex"> {{this.tweet.retweeted_status.user.name}}&nbsp;
+                                <div class="inline">
+                                    <div class="screenName">{{this.tweet.retweeted_status.user.name}}</div>
+                                    &nbsp;&nbsp;
                                     <div class="twHandle">@{{this.tweet.retweeted_status.user.screen_name}}</div>
                                 </div>
-                                <p style="color:#474747">{{this.tweet.retweeted_status.text}}</p>
-
-                                <p class="retweet"><i class="fa fa-retweet"></i> {{this.tweet.user.name}} retweeted</p>
+                                <p style="color:#474747;margin-bottom: 2px">{{this.tweet.retweeted_status.text}}</p>
+                                {{#if tweet.retweeted_status.entities.media}}
+                                    <img class="twImage" src="{{this.tweet.media_image_url}}">
+                                {{/if}}
+                                <p class="retweet" style="margin-bottom: 1px"><i
+                                        class="fa fa-retweet"></i> {{this.tweet.user.name}} retweeted</p>
+                                <hr>
                             </div>
                         {{else}}
                             <div class="col-md-2">
                                 <img class="" src="{{this.tweet.user.profile_image_url}}">
                             </div>
                             <div class="col-md-10">
-                                <div style="display: inline-flex"> {{this.tweet.user.name}}&nbsp;
+                                <div class="inline">
+                                    <div class="screenName">{{this.tweet.user.name}}</div>
+                                    &nbsp;&nbsp;
                                     <div class="twHandle">@{{this.tweet.user.screen_name}}</div>
                                 </div>
-                                <p style="color:#474747">{{this.tweet.text}}</p>
-
-
+                                <p style="color:#474747;margin-bottom: 2px">{{this.tweet.text}}</p>
+                                {{#if tweet.entities.media}}
+                                    <img class="twImage" src="{{this.tweet.media_image_url}}">
+                                {{/if}}
+                                <hr>
                             </div>
                         {{/if}}
-                        <hr>
+
                     </div>
                 {{/each}}
             </div>
@@ -157,20 +165,20 @@
     <div style="margin-top:490px">
         <div class="row">
             <div class="DocumentList">
-                <ul class="list-inline">
-            {{#each videoList}}
-            <li class="DocumentItem">
-                <div class="grid-cols">
-                    <div class="panel panel-default grid">
-                        <div class="panel-body">
-                            <img class="thumbnails" src="{{this.snippet.thumbnails.medium.url}}"><br>
+                <ul class="list-inline inline">
+                    {{#each videoList}}
+                        <li class="DocumentItem">
+                            <div class="grid-cols">
+                                <div class="panel panel-default grid">
+                                    <div class="panel-body">
+                                        <img class="thumbnails" src="{{this.snippet.thumbnails.medium.url}}"><br>
 
-                            <div class="nowrap">&nbsp;&nbsp;{{this.snippet.title}}</div>
-                        </div>
-                    </div>
-                </div>
-                </li>
-            {{/each}}
+                                        <div class="nowrap">&nbsp;&nbsp;{{this.snippet.title}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    {{/each}}
                 </ul>
             </div>
         </div>

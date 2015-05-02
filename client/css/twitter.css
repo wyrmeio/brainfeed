@@ -60,8 +60,10 @@ p *{
 
 .DocumentList
 {
-    overflow-x:scroll;
-    overflow-y:hidden;
+    overflow: none;
+    overflow-x:auto;
+    display: block;
+   /* overflow-y:hidden;*/
     height:250px;
 
     padding: 0 15px;
@@ -89,3 +91,22 @@ p *{
     display: inline-block;
 }
 */
+
+.inline {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -moz-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+}
+.screenName{
+    color:#000;
+
+}
+
+hr {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    border: 0;
+    border-top: 1px solid #c8c8c8;
+}
