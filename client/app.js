@@ -67,8 +67,12 @@ if (Meteor.isClient) {
              return timeline;
              });*/
 
-            return _.map(Tweets.find({}, {sort: {'tweet.created_at': -1}, fields: {tweet: 1}, limit: 50}).fetch(),function(timeline,index){
-                if ( timeline.tweet.entities.media )
+            return _.map(Tweets.find({}, {
+                sort: {'tweet.created_at': -1},
+                fields: {tweet: 1},
+                limit: 50
+            }).fetch(), function (timeline, index) {
+                if (timeline.tweet.entities.media)
                     timeline.tweet.media_image_url = timeline.tweet.entities.media[0].media_url;
                 return timeline;
             });
@@ -76,6 +80,9 @@ if (Meteor.isClient) {
         screenName: function () {
             //return capitalizeFirstLetter(Meteor.user().profile.name);
             return (Meteor.user().profile.name.capitalize());
+        },
+        replyName: function () {
+            return Session.get('replyName');
         }
     });
 
@@ -107,6 +114,73 @@ if (Meteor.isClient) {
             Meteor.call('getArticles', Session.get('link'), function (error, result) {
                 links.set(result);
             });
+        },
+        'click .favourite': function (e, t) {
+            e.preventDefault();
+
+            var self = this;
+            var method = (self.tweet.favorited) ? "destroy" : "create";
+
+            if (self.tweet.favorited) {
+                self.tweet.favorite_count = self.tweet.favorite_count - 1;
+                $(e.currentTarget).toggleClass("animated pulse");
+                $(e.currentTarget).html('<i class="fa fa-star-o"></i> ' + self.tweet.favorite_count);
+
+                self.tweet.favorited = false;
+            }
+            else {
+                self.tweet.favorite_count = self.tweet.favorite_count + 1;
+                $(e.currentTarget).html('<i class="fa fa-star"></i> ' + self.tweet.favorite_count);
+                $(e.currentTarget).toggleClass("animated pulse");
+                self.tweet.favorited = true;
+            }
+            
+
+            Meteor.call('favourite', method, self, Meteor.userId(), function (error,result) {
+
+            });
+        },
+        'click .reply': function (e, t) {
+            e.preventDefault();
+            var self=this;
+            Session.set('replyName',self.tweet.user.screen_name);
+            Session.set('replyId',self.tweet.id_str);
+            $('#reply').modal('show');
+        },
+        'click #postReply': function (e, t) {
+            e.preventDefault();
+            $('#reply').modal('hide');
+
+            Meteor.call('postReply',$("#postReplyText").val(),Session.set('replyName'),Session.set('replyId'),Meteor.userId() ,function (error,result) {
+
+            });
+        },
+        'click .retweet-status': function (e, t) {
+            e.preventDefault();
+
+            var self = this;
+
+            if (self.tweet.retweeted) {
+                self.tweet.retweet_count = self.tweet.retweet_count - 1;
+                $(e.currentTarget).toggleClass("animated pulse");
+                $(e.currentTarget).html('<i class="fa fa-retweet"></i> ' + self.tweet.retweet_count);
+
+                self.tweet.retweeted = false;
+            }
+            else {
+                self.tweet.retweet_count = self.tweet.retweet_count + 1;
+
+                $(e.currentTarget).html('<i class="fa fa-retweet"></i> ' + self.tweet.retweet_count);
+                $(e.currentTarget).toggleClass("animated pulse");
+
+                self.tweet.retweeted = true;
+            }
+
+
+            Meteor.call('retweet',self, Meteor.userId(), function (error,result) {
+
+            });
+
         }
     });
 

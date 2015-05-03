@@ -203,6 +203,91 @@ Meteor.methods({
 
         });
         return myFuture.wait();
+    },
+
+    favourite: function (method,obj,id) {
+
+        var temp = Meteor.users.find({_id: id}).fetch();
+        var token = temp[0].services.twitter.accessToken;
+        var secret = temp[0].services.twitter.accessTokenSecret;
+
+        var Twitter = Meteor.npmRequire('twitter');
+        var client = new Twitter({
+            consumer_key: consumer_key,
+            consumer_secret: consumer_secret,
+            access_token_key: token,
+            access_token_secret: secret
+        });
+
+        // load Future
+        Future = Npm.require('fibers/future');
+        var myFuture = new Future();
+
+        client.post('favorites/'+method, {id: obj.tweet.id_str},  function(error, tweet, response){
+            if(error) throw error;
+
+            console.log(tweet);  // Tweet body.
+            myFuture.return(tweet);
+        });
+
+        return myFuture.wait();
+    },
+
+    postReply: function (text, name, replyId, id) {
+
+        var temp = Meteor.users.find({_id: id}).fetch();
+        var token = temp[0].services.twitter.accessToken;
+        var secret = temp[0].services.twitter.accessTokenSecret;
+
+        var Twitter = Meteor.npmRequire('twitter');
+        var client = new Twitter({
+            consumer_key: consumer_key,
+            consumer_secret: consumer_secret,
+            access_token_key: token,
+            access_token_secret: secret
+        });
+
+        // load Future
+        Future = Npm.require('fibers/future');
+        var myFuture = new Future();
+
+        client.post('statuses/update', {status: text,in_reply_to_status_id:replyId},  function(error, tweet, response){
+            if(error) throw error;
+
+            console.log(tweet);  // Tweet body.
+            myFuture.return(tweet);
+        });
+
+        return myFuture.wait();
+
+    },
+
+    retweet: function (obj,id) {
+
+        var temp = Meteor.users.find({_id: id}).fetch();
+        var token = temp[0].services.twitter.accessToken;
+        var secret = temp[0].services.twitter.accessTokenSecret;
+
+        var Twitter = Meteor.npmRequire('twitter');
+        var client = new Twitter({
+            consumer_key: consumer_key,
+            consumer_secret: consumer_secret,
+            access_token_key: token,
+            access_token_secret: secret
+        });
+
+        // load Future
+        Future = Npm.require('fibers/future');
+        var myFuture = new Future();
+
+        client.post('statuses/retweet/'+obj.tweet.id_str+'.json',function(error, tweet, response){
+            if(error) throw error;
+
+            console.log(tweet);  // Tweet body.
+            myFuture.return(tweet);
+        });
+
+        return myFuture.wait();
     }
 });
 
@@ -212,11 +297,7 @@ Meteor.publish('Tweets', function (id) {
 
 });
 
-Meteor.publish('Tweets', function (id) {
 
-    return Tweets.find({uid: id});
-
-});
 
 
 function getValues(obj, key) {
@@ -260,14 +341,6 @@ twitterStream = function (client, id) {
 
 };
 
-/*Meteor.setInterval(function(){
- if(Tweets.find({uid:id}).count()>500){
- console.log("DB cleaned");
- var temp=Tweets.find({uid:id},{sort:{'tweet.created_at':-1},limit:500}).toArray().map(function(doc){ return doc._id;});
-
- Tweets.remove({_id:{$nin:temp}});
- }
- },30000);*/
 
 
 

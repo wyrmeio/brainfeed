@@ -103,10 +103,10 @@
             {{> videos}}
         </div>
 
-        <div class="col-md-5">
+        <div class="col-md-5 twitter">
             <div style="margin-top:45px;">
                 {{#each timelines}}
-                    <div class="row">
+                    <div class="row bottom-hr">
                         {{#if tweet.retweeted_status}}
 
                             <div class="col-md-2">
@@ -126,7 +126,7 @@
                                 {{/if}}
                                 <p class="retweet" style="margin-bottom: 1px"><i
                                         class="fa fa-retweet"></i> {{this.tweet.user.name}} retweeted</p>
-                                <hr>
+<hr>
                             </div>
                         {{else}}
                             <div class="col-md-2">
@@ -142,7 +142,13 @@
                                 {{#if tweet.entities.media}}
                                     <img class="twImage" src="{{this.tweet.media_image_url}}">
                                 {{/if}}
-                                <hr>
+
+                                <div class="btn-group btn-group-justified">
+                                    <a href="" class="btn btn-link reply"><i class="fa fa-reply"></i></a>
+                                    <a href="" class="btn btn-link retweet-status"><i class="fa fa-retweet"></i> {{this.tweet.retweet_count}}</a>
+                                    <a href=""  class="btn btn-link favourite"><i class="fa fa-star-o"></i> {{this.tweet.favorite_count}}</a>
+                                </div>
+<hr>
                             </div>
                         {{/if}}
 
@@ -152,6 +158,29 @@
         </div>
     </div>
 
+    <div class="modal " id="reply">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Reply to {{replyName}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+
+                        <div class="col-lg-11">
+                            <textarea class="form-control" id="postReplyText" rows="5">@{{replyName}} </textarea>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" id="postReply" class="btn btn-primary">Tweet</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </template>
 

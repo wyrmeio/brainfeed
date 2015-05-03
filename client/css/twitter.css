@@ -105,8 +105,37 @@ p *{
 }
 
 hr {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border: 0;
     border-top: 1px solid #c8c8c8;
+}
+
+.twitter .col-md-2{
+    padding-right: 0px;
+}
+
+.twitter .col-md-10{
+    padding-left: 0px;
+}
+
+.btn{
+    font-size: 13px;
+}
+
+.twitter .row{
+    margin-top: 10px;
+}
+
+a.btn.btn-link {
+    padding: 0px;
+    margin: 0px;
+}
+
+.btn-group-justified{
+    padding-top: 3px;
+}
+
+.btn-link{
+    color:#999999;
 }
