@@ -60,9 +60,9 @@ p *{
 
 .DocumentList
 {
-    overflow: none;
-    overflow-x:auto;
-    display: block;
+    overflow-x:scroll;
+    overflow-y:hidden;
+
    /* overflow-y:hidden;*/
     height:250px;
 
@@ -108,7 +108,7 @@ hr {
     margin-top: 5px;
     margin-bottom: 5px;
     border: 0;
-    border-top: 1px solid #c8c8c8;
+    border-top: 1px solid #EDE9E9;
 }
 
 .twitter .col-md-2{
@@ -139,3 +139,14 @@ a.btn.btn-link {
 .btn-link{
     color:#999999;
 }
+
+img .dp{
+    vertical-align: text-top;
+}
+
+.navbar_right{
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    padding-right: 20px !important;
+}
+

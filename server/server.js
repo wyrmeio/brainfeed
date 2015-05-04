@@ -288,6 +288,35 @@ Meteor.methods({
         });
 
         return myFuture.wait();
+    },
+
+    compose: function (text, id) {
+
+        var temp = Meteor.users.find({_id: id}).fetch();
+        var token = temp[0].services.twitter.accessToken;
+        var secret = temp[0].services.twitter.accessTokenSecret;
+
+        var Twitter = Meteor.npmRequire('twitter');
+        var client = new Twitter({
+            consumer_key: consumer_key,
+            consumer_secret: consumer_secret,
+            access_token_key: token,
+            access_token_secret: secret
+        });
+
+        // load Future
+        Future = Npm.require('fibers/future');
+        var myFuture = new Future();
+
+        client.post('statuses/update', {status: text},  function(error, tweet, response){
+            if(error) throw error;
+
+            console.log(tweet);  // Tweet body.
+            myFuture.return(tweet);
+        });
+
+        return myFuture.wait();
+
     }
 });
 

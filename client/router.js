@@ -92,7 +92,7 @@ WikiController = RouteController.extend({
 	}
 });
 
-Router.route('compose', function () {
+/*Router.route('compose', function () {
     mixpanel.track_links("/home", "Opened Compose screen");
 	this.render('compose');
-});
+});*/
