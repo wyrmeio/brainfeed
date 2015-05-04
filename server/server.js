@@ -326,9 +326,6 @@ Meteor.publish('Tweets', function (id) {
 
 });
 
-
-
-
 function getValues(obj, key) {
     var objects = [];
     for (var i in obj) {
